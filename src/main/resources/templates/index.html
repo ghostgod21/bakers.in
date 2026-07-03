@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Bakers.in — Cakes, Pizza, Burgers &amp; Mocktails, baked fresh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <section class="hero">
+        <div class="container hero-inner">
+            <div class="hero-copy">
+                <span class="hero-eyebrow">🎂 Baked daily · 🍕 Fired fresh · 🍹 Poured cold</span>
+                <h1>One kitchen.<br/>Every craving,<br/><span class="hero-highlight">covered.</span></h1>
+                <p>From birthday cakes to midnight pizza, sliders to sundowners — Bakers.in brings
+                    the whole spread to your door, still warm (or still cold).</p>
+                <div class="hero-actions">
+                    <a href="/products" class="btn btn-primary">Explore the full menu</a>
+                    <a href="/category/cakes" class="btn btn-ghost">Order a cake 🎂</a>
+                </div>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+                <div class="hero-blob hero-blob-1">🎂</div>
+                <div class="hero-blob hero-blob-2">🍕</div>
+                <div class="hero-blob hero-blob-3">🍹</div>
+                <div class="hero-blob hero-blob-4">🍔</div>
+                <div class="hero-blob hero-blob-5">🍪</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container category-showcase">
+        <h2 class="section-title">Pick a craving</h2>
+        <div class="category-grid">
+            <a th:each="cat : ${categories}" th:href="@{/category/{slug}(slug=${cat.slug})}"
+               class="category-card" th:style="'--accent:' + ${cat.accentColor}">
+                <span class="category-icon" th:text="${cat.icon}">🍰</span>
+                <span class="category-name" th:text="${cat.name}">Category</span>
+                <span class="category-desc" th:text="${cat.description}">Description</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="container sale-banner" th:if="${onSale != null and !onSale.isEmpty()}">
+        <div class="sale-banner-inner">
+            <div class="sale-banner-text">
+                <span class="sale-tag">🔥 Limited-time offers</span>
+                <h2>Today's sweet deals</h2>
+            </div>
+        </div>
+        <div class="product-grid">
+            <div th:each="p : ${onSale}" th:replace="~{fragments/product-card :: card(${p})}"></div>
+        </div>
+    </section>
+
+    <section class="container featured-section">
+        <h2 class="section-title">Customer favourites</h2>
+        <div class="product-grid">
+            <div th:each="p : ${featured}" th:replace="~{fragments/product-card :: card(${p})}"></div>
+        </div>
+    </section>
+
+    <section class="promise-strip container">
+        <div class="promise-item"><span>🚚</span><p>Free delivery over ₹499</p></div>
+        <div class="promise-item"><span>🧊</span><p>Freshly made, never frozen</p></div>
+        <div class="promise-item"><span>⏱️</span><p>Delivered within the hour</p></div>
+        <div class="promise-item"><span>💳</span><p>COD, UPI &amp; card accepted</p></div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:src="@{/js/cart.js}"></script>
+</body>
+</html>

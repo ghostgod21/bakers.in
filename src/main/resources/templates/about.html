@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>About — Bakers.in</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="container about-page">
+    <h1>About Bakers.in</h1>
+    <p>Bakers.in started as a single neighbourhood oven and grew into a one-stop kitchen for
+        everything you crave — cakes for birthdays, pizza for movie nights, burgers for quick
+        bites, and mocktails for when it's just too hot outside.</p>
+    <p>Every order is made fresh after you place it — nothing sits around waiting. We bake,
+        grill, fry and shake to order, then get it to your door as fast as we can.</p>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

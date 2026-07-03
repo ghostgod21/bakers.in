@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header" class="site-header">
+    <div class="topbar">
+        <div class="container topbar-inner">
+            <span>🎉 Free delivery on orders above ₹499</span>
+            <span class="topbar-phone">📞 1800-BAKERS · Hyderabad &amp; nearby</span>
+        </div>
+    </div>
+
+    <div class="container header-main">
+        <a href="/" class="brand">
+            <span class="brand-badge">B</span>
+            <span class="brand-text">
+                <span class="brand-name">Bakers<span class="brand-dot">.in</span></span>
+                <span class="brand-tagline">baked fresh, served happy</span>
+            </span>
+        </a>
+
+        <form action="/products" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search cakes, pizza, mocktails..." aria-label="Search products"/>
+            <button type="submit" aria-label="Search">🔍</button>
+        </form>
+
+        <a href="/cart" class="cart-link">
+            <span class="cart-icon">🛒</span>
+            <span class="cart-label">Cart</span>
+            <span class="cart-count" id="cart-count" th:text="${cartCount}">0</span>
+        </a>
+    </div>
+
+    <nav class="category-nav">
+        <div class="container category-nav-inner">
+            <a href="/products" class="cat-chip">🍽️ All</a>
+            <a th:each="cat : ${categories}"
+               th:href="@{/category/{slug}(slug=${cat.slug})}"
+               th:text="${cat.icon + ' ' + cat.name}"
+               class="cat-chip">Category</a>
+        </div>
+    </nav>
+</header>
+</body>
+</html>

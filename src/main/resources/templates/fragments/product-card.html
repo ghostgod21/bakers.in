@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="card(p)" class="product-card">
+    <a th:href="@{/product/{id}(id=${p.id})}" class="product-card-media">
+        <img th:src="${p.imageUrl}" th:alt="${p.name}" loading="lazy"/>
+        <span class="veg-dot" th:classappend="${p.veg} ? 'veg' : 'nonveg'" th:title="${p.veg} ? 'Veg' : 'Non-veg'"></span>
+        <span class="sale-badge" th:if="${p.onSale}" th:text="${p.discountPercent + '% OFF'}">10% OFF</span>
+    </a>
+    <div class="product-card-body">
+        <a th:href="@{/product/{id}(id=${p.id})}" class="product-name" th:text="${p.name}">Product name</a>
+        <div class="product-rating">⭐ <span th:text="${p.rating}">4.5</span></div>
+        <div class="product-price-row">
+            <span class="price-final" th:text="'₹' + ${#numbers.formatDecimal(p.finalPrice, 1, 'COMMA', 0, 'POINT')}">₹199</span>
+            <span class="price-original" th:if="${p.onSale}" th:text="'₹' + ${#numbers.formatDecimal(p.price, 1, 'COMMA', 0, 'POINT')}">₹249</span>
+            <span class="price-unit" th:text="${p.unit}">per piece</span>
+        </div>
+        <form th:action="@{/cart/add}" method="post" class="add-to-cart-form">
+            <input type="hidden" name="productId" th:value="${p.id}"/>
+            <input type="hidden" name="quantity" value="1"/>
+            <button type="submit" class="btn btn-add">Add to cart</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

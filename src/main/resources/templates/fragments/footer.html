@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="site-footer">
+    <div class="container footer-grid">
+        <div class="footer-brand">
+            <span class="brand-badge">B</span>
+            <p>Bakers<span class="brand-dot">.in</span></p>
+            <p class="footer-tagline">Cakes, pizzas, burgers, mocktails &amp; more — baked and made fresh, delivered happy.</p>
+        </div>
+        <div>
+            <h4>Shop</h4>
+            <ul>
+                <li><a href="/category/cakes">Cakes</a></li>
+                <li><a href="/category/desserts">Pastries &amp; Desserts</a></li>
+                <li><a href="/category/pizza">Pizza</a></li>
+                <li><a href="/category/burgers">Burgers</a></li>
+                <li><a href="/category/mocktails">Mocktails</a></li>
+                <li><a href="/category/snacks">Cookies &amp; Snacks</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Company</h4>
+            <ul>
+                <li><a href="/about">About us</a></li>
+                <li><a href="/cart">Your cart</a></li>
+                <li><a href="/products">Full menu</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Get in touch</h4>
+            <ul>
+                <li>📞 1800-BAKERS</li>
+                <li>✉️ hello@bakers.in</li>
+                <li>📍 Hyderabad, Telangana, India</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container">&copy; <span th:text="${#dates.year(#dates.createNow())}">2026</span> Bakers.in — made with 🧁 for everyone with a sweet tooth.</div>
+    </div>
+</footer>
+</body>
+</html>
