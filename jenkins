@@ -1,0 +1,118 @@
+pipeline {
+    agent any
+ 
+    tools {
+        jdk 'jdk21'
+        maven 'maven3'
+    }
+ 
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '15'))
+        timestamps()
+        disableConcurrentBuilds()
+        timeout(time: 30, unit: 'MINUTES')
+    }
+ 
+    environment {
+        APP_NAME        = 'bakers.in'
+        IMAGE_NAME      = 'bakers-ecommerce'
+        REGISTRY        = 'docker.io/yourdockerhubuser'   // <-- change to your registry/namespace
+        IMAGE_TAG       = "${env.BUILD_NUMBER}"
+        FULL_IMAGE      = "${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+        LATEST_IMAGE    = "${REGISTRY}/${IMAGE_NAME}:latest"
+    }
+ 
+    stages {
+ 
+        stage('Checkout') {
+            steps {
+                echo "Checking out source for ${APP_NAME}"
+                checkout scm
+            }
+        }
+ 
+        stage('Build') {
+            steps {
+                sh 'mvn -B -ntp clean compile'
+            }
+        }
+ 
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn -B -ntp test'
+            }
+            post {
+                always {
+                    junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
+                }
+            }
+        }
+ 
+        stage('Package') {
+            steps {
+                sh 'mvn -B -ntp package -DskipTests'
+                archiveArtifacts artifacts: 'target/bakers-ecommerce.jar', fingerprint: true
+            }
+        }
+ 
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build(FULL_IMAGE, '.')
+                }
+            }
+        }
+ 
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-creds') {
+                        docker.image(FULL_IMAGE).push()
+                        docker.image(FULL_IMAGE).push('latest')
+                    }
+                }
+            }
+        }
+ 
+        stage('Deploy') {
+            steps {
+                // --- Option A: Render.com — trigger the deploy hook (render.yaml already in repo)
+                // withCredentials([string(credentialsId: 'render-deploy-hook', variable: 'HOOK_URL')]) {
+                //     sh 'curl -fsSL -X POST "$HOOK_URL"'
+                // }
+ 
+                // --- Option B: Generic Docker host over SSH (Railway/Fly.io/EC2/any VM) ---
+                // sshagent(credentials: ['bakersin-deploy-key']) {
+                //     sh """
+                //         ssh -o StrictHostKeyChecking=no user@your-server '
+                //             docker pull ${FULL_IMAGE} &&
+                //             docker stop bakers-ecommerce || true &&
+                //             docker rm bakers-ecommerce || true &&
+                //             docker run -d --name bakers-ecommerce -p 8080:8080 \
+                //               -e SPRING_PROFILES_ACTIVE=prod \
+                //               -e SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL \
+                //               -e SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME \
+                //               -e SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD \
+                //               ${FULL_IMAGE}
+                //         '
+                //     """
+                // }
+ 
+                echo "Deploy stage placeholder — uncomment the block matching your target platform."
+            }
+        }
+    }
+ 
+    post {
+        success {
+            echo "✅ ${APP_NAME} build #${BUILD_NUMBER} succeeded — image: ${FULL_IMAGE}"
+        }
+        failure {
+            echo "❌ ${APP_NAME} build #${BUILD_NUMBER} failed. Check logs above."
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
+ 
